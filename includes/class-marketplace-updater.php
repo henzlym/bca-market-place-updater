@@ -188,6 +188,8 @@ if (!class_exists('Marketplace_Updater')) {
 					)
 				);
 
+				set_transient($cache_key, $remote, $this->cache_time);
+
 				if (
 					is_wp_error($remote)
 					|| 200 !== wp_remote_retrieve_response_code($remote)
@@ -196,7 +198,6 @@ if (!class_exists('Marketplace_Updater')) {
 					return false;
 				}
 
-				set_transient($cache_key, $remote, $this->cache_time);
 			}
 
 			$remote = json_decode(wp_remote_retrieve_body($remote), $associative);
