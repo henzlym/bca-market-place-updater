@@ -11,7 +11,7 @@ function _marketplace_get_api_credentials()
 		'api_key' => false,
 		'api_domain' => ''
 	);
-	if ($extensions_general = _marketplace_get_option_field('extensions_general')) {
+	if ($extensions_general = _marketplace_get_option_field('marketplace_general')) {
 		$api_username = ( isset($extensions_general['api_username']) ) ? $extensions_general['api_username'] : false;
 		$api_key = ( isset($extensions_general['api_key']) ) ? $extensions_general['api_key'] : false;
 		$api_domain = ( isset($extensions_general['api_domain']) ) ? $extensions_general['api_domain'] : false;

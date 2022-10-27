@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Marketplace Updater
- * Description:       Connect to our marketplace to get all of web tools we offer.
+ * Description:       Connect to our marketplace to get all of the web tools we offer.
  * Requires at least: 5.8
  * Requires PHP:      7.0
  * Version:           0.1.0
