@@ -7,21 +7,19 @@ function _marketplace_get_option_field($group = null, $field = null){
 function _marketplace_get_api_credentials()
 {
 	$api_credentials = array(
-		'username' => false,
-		'api_key' => false,
+		'api_authorization_token' => false,
+		'api_secret_key' => false,
 		'api_domain' => ''
 	);
 	if ($extensions_general = _marketplace_get_option_field('marketplace_general')) {
-		$api_username = ( isset($extensions_general['api_username']) ) ? $extensions_general['api_username'] : false;
-		$api_key = ( isset($extensions_general['api_key']) ) ? $extensions_general['api_key'] : false;
+		$api_authorization_token = ( isset($extensions_general['api_authorization_token']) ) ? $extensions_general['api_authorization_token'] : false;
+		$api_secret_key = ( isset($extensions_general['api_secret_key']) ) ? $extensions_general['api_secret_key'] : false;
 		$api_domain = ( isset($extensions_general['api_domain']) ) ? $extensions_general['api_domain'] : false;
-		if ( $api_username && $api_key ) {
-			$api_credentials = array(
-				'username' => $api_username,
-				'api_key' => $api_key,
-				'api_domain' => $api_domain
-			);
-		}
+		$api_credentials = array(
+			'api_authorization_token' => $api_authorization_token,
+			'api_secret_key' => $api_secret_key,
+			'api_domain' => $api_domain
+		);
 	}
 	return $api_credentials;
 }

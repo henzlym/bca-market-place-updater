@@ -172,7 +172,9 @@ if (!class_exists('Marketplace_Updater')) {
 		{
 			$remote = get_transient($cache_key);
 			$api_credentials = _marketplace_get_api_credentials();
-			if ( !current_user_can( 'manage_options' ) || ( !$api_credentials['username'] || !$api_credentials['api_key'] ) ) {
+			$Marketplace_Authorization = new Marketplace_Authorization();
+            $authorization = $Marketplace_Authorization->decrypt($api_credentials['api_authorization_token']);
+			if ( !current_user_can( 'manage_options' ) || !$authorization ) {
 				return false;
 			}
 
@@ -183,7 +185,7 @@ if (!class_exists('Marketplace_Updater')) {
 					array(
 						'timeout' => 10,
 						'headers' => array(
-							'Authorization' => 'Basic ' .  base64_encode( $api_credentials['username'] . ':' . $api_credentials['api_key'])
+							'Authorization' => 'Basic ' .  base64_encode( $authorization )
 						)
 					)
 				);

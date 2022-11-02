@@ -15,9 +15,11 @@
  * @package           create-block
  */
 defined('ABSPATH') || exit;
+define('MARKETPLACE_FILE', __FILE__);
 define('MARKETPLACE_URL', plugin_dir_url(__FILE__));
 define('MARKETPLACE_PATH', plugin_dir_path(__FILE__));
 
 require_once MARKETPLACE_PATH . '/includes/helpers.php';
+require_once MARKETPLACE_PATH . '/includes/class-marketplace-authorization.php';
 require_once MARKETPLACE_PATH . '/includes/class-marketplace-updater.php';
 require_once MARKETPLACE_PATH . '/includes/class-marketplace-settings.php';
