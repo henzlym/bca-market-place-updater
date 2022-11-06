@@ -23,3 +23,25 @@ function _marketplace_get_api_credentials()
 	}
 	return $api_credentials;
 }
+function _marketplace_api_request_is_error( $response )
+{
+	$errors = array(
+		'incorrect_password'
+	);
+
+	if (isset($response->code) && in_array($response->code, $errors ) ) {
+		if (isset($response->message) && $response->message ) {
+			$type = 'error';
+			$message = __( $response->message, 'marketplace' );
+			$errors = get_settings_errors( 'marketplace_updater_api_notices' );
+
+			if (empty($errors)) {
+				add_settings_error('marketplace_updater_api_notices', 'marketplace_updater_settings_message',$message, $type);
+			}
+
+		}
+		return true;
+	}
+
+	return false;
+}

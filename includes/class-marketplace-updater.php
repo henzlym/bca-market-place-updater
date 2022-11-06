@@ -49,11 +49,11 @@ if (!class_exists('Marketplace_Updater')) {
 			if (!is_object($queried_theme)||empty($queried_theme)||empty($action)) return false;
 
 			$theme = new stdClass();
-			
+
 			if ( $action === 'query_themes' ) {
 				$queried_theme->package->query_themes->author = (array) $queried_theme->package->query_themes->author;
-				$theme =(object) array_merge( 
-					(array) $queried_theme->package->default, 
+				$theme =(object) array_merge(
+					(array) $queried_theme->package->default,
 					(array) $queried_theme->package->query_themes
 				);
 
@@ -61,8 +61,8 @@ if (!class_exists('Marketplace_Updater')) {
 			}
 
 			if ( $action === 'theme_information' ) {
-				$theme =(object) array_merge( 
-					(array) $queried_theme->package->default, 
+				$theme =(object) array_merge(
+					(array) $queried_theme->package->default,
 					(array) $queried_theme->package->theme_information
 				);
 				return $theme;
@@ -80,7 +80,7 @@ if (!class_exists('Marketplace_Updater')) {
 			if (!is_object($queried_plugin)||empty($queried_plugin)||empty($action)) return false;
 
 			$plugin = new stdClass();
-			
+
 			if ( $action === 'query_plugins' ) {
 				$queried_plugin->package->query_plugins->icons = (array) $queried_plugin->package->default->icons;
 				$queried_plugin->package->query_plugins->banners = (array) $queried_plugin->package->default->banners;
@@ -114,7 +114,7 @@ if (!class_exists('Marketplace_Updater')) {
 		{
 			$parsed_url = wp_parse_url($url);
 			$wp_rest_plugins_url = wp_parse_url($this->wp_rest_plugins_url);
-			
+
 			remove_filter('http_request_args', array($this, 'set_reject_unsafe_urls_false'));
 
 			if ($parsed_url['host'] == $wp_rest_plugins_url['host']) {
@@ -148,7 +148,7 @@ if (!class_exists('Marketplace_Updater')) {
 		public function set_package_info_results( $res, $action, $args )
 		{
 			if ( !('query_themes' !== $action || 'query_plugins' !== $action) ) return $res;
-			
+
 			$packages = array();
 			$packages = ( 'query_themes' == $action ) ? $this->themes_api_request() : $packages;
 			$packages = ( 'query_plugins' == $action ) ? $this->plugins_api_request() : $packages;
@@ -156,7 +156,7 @@ if (!class_exists('Marketplace_Updater')) {
 			if (empty($packages)) return $res;
 
 			foreach ( $packages as $key => $package ) {
-				
+
 				$package = ( 'query_themes' == $action ) ? $this->build_query_themes_object( $package, $action ) : $package;
 				$package = ( 'query_plugins' == $action ) ? $this->build_plugins_query_object( $package, $action ) : $package;
 
@@ -217,7 +217,7 @@ if (!class_exists('Marketplace_Updater')) {
 		public function themes_api_request($associative = false)
 		{
 			$remote = $this->api_request( $this->wp_rest_plugins_url . 'wp-json/wp/v2/marketplace/themes', $associative, 'extensions_update_themes');
-			
+
 			return $remote;
 		}
 		public function get_package_updates($value, $transient)
@@ -232,9 +232,9 @@ if (!class_exists('Marketplace_Updater')) {
 				$packages = $this->themes_api_request();
 			}
 
-			if (empty($packages)) return $value;
+			if (empty($packages) || _marketplace_api_request_is_error( $packages )) return $value;
 			if (empty($value->checked)) return $value;
-			
+
 			foreach ($packages as $key => $package) {
 				$package_key = false;
 				$current_package = false;
@@ -247,7 +247,7 @@ if (!class_exists('Marketplace_Updater')) {
 					}
 					$current_package = get_plugin_data( WP_PLUGIN_DIR . '/' . $package_key );
 					$current_package_version = ! empty( $current_package['Version'] ) ? $current_package['Version'] : false;
-					
+
 				} else if ( $transient == 'update_themes' ) {
 					$package = (object) $package;
 					$package_key = $package->stylesheet;
@@ -270,7 +270,7 @@ if (!class_exists('Marketplace_Updater')) {
 					} else {
 						$res = $this->build_plugins_query_object( $package, 'update' );
 					}
-					
+
 					$value->response[$package_key] = $res;
 				}
 			}

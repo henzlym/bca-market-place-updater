@@ -21,7 +21,7 @@ if (!class_exists('Marketplace_Settings')) {
         }
         public function init()
         {
-            
+
             // add_filter('wp_is_application_passwords_available_for_user', array($this,'wp_is_application_passwords_available_for_user'), 10, 2);
 
             if (class_exists('Marketplace_Updater')) {
@@ -96,14 +96,6 @@ if (!class_exists('Marketplace_Settings')) {
                     'args' => array(
                         'sanitize_callback' => array( $this, 'marketplace_purge_cache_sanitize' )
                     ),
-                ),
-                array(
-                    'option_group' => 'marketplace-general',
-                    'option_name' => 'marketplace_get_auth',
-                    'page' => 'marketplace-general',
-                    'args' => array(
-                        'sanitize_callback' => array( $this, 'marketplace_auth_sanitize' )
-                    ),
                 )
             );
 
@@ -137,7 +129,7 @@ if (!class_exists('Marketplace_Settings')) {
                 array(
                     'id' => 'api_domain',
                     'title' => 'Marketplace Domain',
-                    'callback' => array($this, 'select_field'),
+                    'callback' => array($this, 'input_field'),
                     'page' => 'marketplace-general',
                     'section' => 'general',
                     'args' => array(
@@ -147,29 +139,7 @@ if (!class_exists('Marketplace_Settings')) {
                         'description' => '',
                         'default' => '',
                         'type' => 'url',
-                        'choices' => array(
-                            '' => 'Select Domain',
-                            'http://dev.mixedmartialarts.com/' => 'dev.mixedmartialarts.com',
-                            'https://staging.publisherdesk.com/' => 'staging.publisherdesk.com',
-                        ),
                         'option_group' => 'marketplace_general',
-                    )
-                ),
-                array(
-                    'id' => 'marketplace_get_auth',
-                    'title' => '',
-                    'callback' => array($this, 'submit_button'),
-                    'page' => 'marketplace-general',
-                    'section' => 'general',
-                    'args' => array(
-                        'name' => 'marketplace_get_auth',
-                        'label_for' => 'marketplace_get_auth',
-                        'title' => 'Get API Keys',
-                        'class' => 'marketplace hide-title',
-                        'description' => '',
-                        'default' => '',
-                        'type' => 'text',
-                        'option_group' => 'marketplace_get_auth',
                     )
                 ),
                 array(
@@ -203,7 +173,7 @@ if (!class_exists('Marketplace_Settings')) {
                         'type' => 'password',
                         'option_group' => 'marketplace_general',
                     )
-                ),
+                )
             );
         }
         public function marketplace_purge_cache_sanitize( $values )
@@ -235,23 +205,6 @@ if (!class_exists('Marketplace_Settings')) {
                 mt_rand( 0, 0xffff ),
                 mt_rand( 0, 0xffff )
             );
-        }
-        public function marketplace_auth_sanitize( $values )
-        {
-            $api_credentials = _marketplace_get_api_credentials();
-            if (!$api_credentials['api_domain']) return;
-            // $admin_url = $api_credentials['api_domain'] . 'wp-admin/authorize-application.php';
-            $admin_url = admin_url( 'authorize-application.php' );
-            $auth_url = add_query_arg( array( 
-                'app_name' => 'Market Place',
-                'app_id' => $this->generate_uuid4(),
-                'sitename' => get_bloginfo(),
-                // 'success_url' => admin_url( 'admin.php?page=marketplace-general' )
-            ), $admin_url );
-
-            wp_redirect( $auth_url, 301 );
-            exit;
-
         }
         /**
          * Register field options for the admin submenu page
@@ -342,15 +295,15 @@ if (!class_exists('Marketplace_Settings')) {
             }
 
             // add error/update messages
-            settings_errors('marketplace_manager_notices');
+            settings_errors('marketplace_updater_notices');
+			settings_errors('marketplace_updater_api_notices');
 
             require_once MARKETPLACE_PATH . '/admin/admin.php';
         }
 
         public function page_section($args)
         {
-            $Marketplace_Authorization = new Marketplace_Authorization();
-            echo $Marketplace_Authorization->decrypt(_marketplace_get_api_credentials()['api_authorization_token']);
+			return null;
         }
 
         public function input_field($args)
